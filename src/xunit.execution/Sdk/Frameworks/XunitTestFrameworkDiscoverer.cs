@@ -18,8 +18,12 @@ namespace Xunit.Sdk
         /// </summary>
         public static readonly string DisplayName = string.Format(CultureInfo.InvariantCulture, "xUnit.net {0}", new object[] { typeof(XunitTestFrameworkDiscoverer).GetTypeInfo().Assembly.GetName().Version });
 
+        /// <summary> 
+        /// Provides a way to override the default discoverers 
+        /// </summary> 
+        protected readonly Dictionary<Type, Type> DiscovererTypeCache = new Dictionary<Type, Type>(); // key is a Type that is or derives from FactAttribute 
+
         readonly Dictionary<Type, IXunitTestCaseDiscoverer> discovererCache = new Dictionary<Type, IXunitTestCaseDiscoverer>();
-        readonly Dictionary<Type, Type> discovererTypeCache = new Dictionary<Type, Type>(); // key is a Type that is or derives from FactAttribute
 
         /// <summary>
         /// Initializes a new instance of the <see cref="XunitTestFrameworkDiscoverer"/> class.
@@ -83,7 +87,7 @@ namespace Xunit.Sdk
             var factAttributeType = (factAttribute as IReflectionAttributeInfo)?.Attribute.GetType();
 
             Type discovererType = null;
-            if (factAttributeType == null || !discovererTypeCache.TryGetValue(factAttributeType, out discovererType))
+            if (factAttributeType == null || !DiscovererTypeCache.TryGetValue(factAttributeType, out discovererType))
             {
                 var testCaseDiscovererAttribute = factAttribute.GetCustomAttributes(typeof(XunitTestCaseDiscovererAttribute)).FirstOrDefault();
                 if (testCaseDiscovererAttribute != null)
@@ -93,7 +97,7 @@ namespace Xunit.Sdk
                 }
 
                 if (factAttributeType != null)
-                    discovererTypeCache[factAttributeType] = discovererType;
+                    DiscovererTypeCache[factAttributeType] = discovererType;
 
             }
             if (discovererType == null)

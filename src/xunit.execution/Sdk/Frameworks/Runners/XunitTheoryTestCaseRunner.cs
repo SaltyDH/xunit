@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit.Abstractions;
@@ -15,9 +16,13 @@ namespace Xunit.Sdk
     {
         static readonly object[] NoArguments = new object[0];
 
+        /// <summary> 
+        /// Provides the diagnostic message sink to inheriting classes 
+        /// </summary> 
+        protected readonly IMessageSink DiagnosticMessageSink;
+
         readonly ExceptionAggregator cleanupAggregator = new ExceptionAggregator();
         Exception dataDiscoveryException;
-        readonly IMessageSink diagnosticMessageSink;
         readonly List<XunitTestRunner> testRunners = new List<XunitTestRunner>();
         readonly List<IDisposable> toDispose = new List<IDisposable>();
 
@@ -42,7 +47,7 @@ namespace Xunit.Sdk
                                          CancellationTokenSource cancellationTokenSource)
             : base(testCase, displayName, skipReason, constructorArguments, NoArguments, messageBus, aggregator, cancellationTokenSource)
         {
-            this.diagnosticMessageSink = diagnosticMessageSink;
+            DiagnosticMessageSink = diagnosticMessageSink;
         }
 
         /// <inheritdoc/>
@@ -74,7 +79,7 @@ namespace Xunit.Sdk
                     IDataDiscoverer discoverer;
                     try
                     {
-                        discoverer = ExtensibilityPointFactory.GetDataDiscoverer(diagnosticMessageSink, discovererType);
+                        discoverer = ExtensibilityPointFactory.GetDataDiscoverer(DiagnosticMessageSink, discovererType);
                     }
                     catch (InvalidCastException)
                     {
@@ -113,9 +118,10 @@ namespace Xunit.Sdk
                         convertedDataRow = Reflector.ConvertArguments(convertedDataRow, parameterTypes);
 
                         var theoryDisplayName = TestCase.TestMethod.Method.GetDisplayNameWithArguments(DisplayName, convertedDataRow, resolvedTypes);
-                        var test = new XunitTest(TestCase, theoryDisplayName);
+                        var test = GenerateTest(TestCase, theoryDisplayName);
                         var skipReason = SkipReason ?? dataAttribute.GetNamedArgument<string>("Skip");
-                        testRunners.Add(new XunitTestRunner(test, MessageBus, TestClass, ConstructorArguments, methodToRun, convertedDataRow, skipReason, BeforeAfterAttributes, Aggregator, CancellationTokenSource));
+                        var runner = GenerateTestRunner(test, methodToRun, convertedDataRow, skipReason);
+                        testRunners.Add(runner);
                     }
                 }
             }
@@ -124,6 +130,18 @@ namespace Xunit.Sdk
                 // Stash the exception so we can surface it during RunTestAsync
                 dataDiscoveryException = ex;
             }
+        }
+
+        /// <inheritdoc/> 
+        protected override XunitTestRunner GenerateTestRunner(ITest test, MethodInfo methodToRun, object[] convertedDataRow, string skipReason)
+        {
+            return new XunitTestRunner(test, MessageBus, TestClass, ConstructorArguments, methodToRun, convertedDataRow, skipReason, BeforeAfterAttributes, Aggregator, CancellationTokenSource);
+        }
+
+        /// <inheritdoc/> 
+        protected override ITest GenerateTest(IXunitTestCase testCase, string displayName)
+        {
+            return new XunitTest(TestCase, displayName);
         }
 
         /// <inheritdoc/>

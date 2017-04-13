@@ -61,6 +61,7 @@ namespace Xunit.Sdk
                 beforeAfterTestCollectionAttributes
                          .Concat(TestClass.GetTypeInfo().GetCustomAttributes(typeof(BeforeAfterTestAttribute)))
                          .Concat(TestMethod.GetCustomAttributes(typeof(BeforeAfterTestAttribute)))
+                         .Concat(ProvideAdditionalTestInterceptions())
                          .Cast<BeforeAfterTestAttribute>()
                          .ToList();
         }
@@ -103,6 +104,39 @@ namespace Xunit.Sdk
 
         /// <inheritdoc/>
         protected override Task<RunSummary> RunTestAsync()
-            => new XunitTestRunner(new XunitTest(TestCase, DisplayName), MessageBus, TestClass, ConstructorArguments, TestMethod, TestMethodArguments, SkipReason, beforeAfterAttributes, new ExceptionAggregator(Aggregator), CancellationTokenSource).RunAsync();
+            => GenerateTestRunner(GenerateTest(TestCase, DisplayName), TestMethod, TestMethodArguments, SkipReason).RunAsync();
+
+        /// <summary> 
+        /// Generates a new Test Runner to execute the test 
+        /// </summary> 
+        /// <param name="test">The test to run</param> 
+        /// <param name="testMethod">The corresponding method to execute</param> 
+        /// <param name="testMethodArguments">An array of method parameters</param> 
+        /// <param name="skipReason">If this test is skipped, contains the skip reason</param> 
+        /// <returns>The Xunit Test Runner</returns> 
+        protected virtual XunitTestRunner GenerateTestRunner(ITest test, MethodInfo testMethod, object[] testMethodArguments, string skipReason)
+        {
+            return new XunitTestRunner(test, MessageBus, TestClass, ConstructorArguments, testMethod, testMethodArguments, skipReason, beforeAfterAttributes, new ExceptionAggregator(Aggregator), CancellationTokenSource);
+        }
+
+        /// <summary> 
+        /// Initializes an XunitTest for use by the Test Runner 
+        /// </summary> 
+        /// <param name="testCase">The test case under test</param> 
+        /// <param name="displayName">A display name for the specific test case</param> 
+        /// <returns>The Xunit test to execute</returns> 
+        protected virtual ITest GenerateTest(IXunitTestCase testCase, string displayName)
+        {
+            return new XunitTest(testCase, displayName);
+        }
+
+        /// <summary> 
+        /// Allows inheriting classes a way to provide custom test interceptors 
+        /// </summary> 
+        /// <returns></returns> 
+        protected virtual IEnumerable<BeforeAfterTestAttribute> ProvideAdditionalTestInterceptions()
+        {
+            return new BeforeAfterTestAttribute[0];
+        }
     }
 }
