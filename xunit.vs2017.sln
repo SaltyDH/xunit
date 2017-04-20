@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.0
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 14.0.22823.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{DAED8494-AC8A-4C67-A8F1-616D95ECC302}"
 EndProject
@@ -90,6 +90,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "test.xunit.runner.utility", "test\test.xunit.runner.utility\test.xunit.runner.utility.csproj", "{A605E559-074C-4693-B4A3-5F939EFCFC4B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotnet-xunit", "src\dotnet-xunit\dotnet-xunit.csproj", "{786596B8-9EDB-4227-B1C6-12FABCB9E85A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{C6B84120-EAAB-4095-876E-0639631FBC71}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xunit.samples.autofac", "samples\xunit.samples.autofac\xunit.samples.autofac.csproj", "{E9CA17E6-172B-4FE2-969E-4ED458BF02A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -243,6 +247,14 @@ Global
 		{786596B8-9EDB-4227-B1C6-12FABCB9E85A}.Release_x86|Any CPU.Build.0 = Release|Any CPU
 		{786596B8-9EDB-4227-B1C6-12FABCB9E85A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{786596B8-9EDB-4227-B1C6-12FABCB9E85A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9CA17E6-172B-4FE2-969E-4ED458BF02A4}.Debug_x86|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9CA17E6-172B-4FE2-969E-4ED458BF02A4}.Debug_x86|Any CPU.Build.0 = Debug|Any CPU
+		{E9CA17E6-172B-4FE2-969E-4ED458BF02A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9CA17E6-172B-4FE2-969E-4ED458BF02A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9CA17E6-172B-4FE2-969E-4ED458BF02A4}.Release_x86|Any CPU.ActiveCfg = Release|Any CPU
+		{E9CA17E6-172B-4FE2-969E-4ED458BF02A4}.Release_x86|Any CPU.Build.0 = Release|Any CPU
+		{E9CA17E6-172B-4FE2-969E-4ED458BF02A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9CA17E6-172B-4FE2-969E-4ED458BF02A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -274,5 +286,6 @@ Global
 		{9277539B-8792-4D6D-8B52-DBE784EE3B3A} = {9D9F81DC-EE05-43B4-AF77-8EFE32024E82}
 		{A605E559-074C-4693-B4A3-5F939EFCFC4B} = {AE42309B-BFBE-4253-8AD6-BBFD676152ED}
 		{786596B8-9EDB-4227-B1C6-12FABCB9E85A} = {C11636E8-A3D7-4B0C-BC1E-2726B02A101F}
+		{E9CA17E6-172B-4FE2-969E-4ED458BF02A4} = {C6B84120-EAAB-4095-876E-0639631FBC71}
 	EndGlobalSection
 EndGlobal
